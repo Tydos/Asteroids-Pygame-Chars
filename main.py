@@ -14,7 +14,9 @@ star = pygame.image.load('asteroidsPics/star.png')
 asteroid100 = pygame.image.load('asteroidsPics/asteroid100.png')
 asteroid150 = pygame.image.load('asteroidsPics/asteroid150.png')
 asteroid50 = pygame.image.load('D:/AsteroidsTut-master/a.png')
-
+word_c = pygame.image.load('c.png')
+word_a = pygame.image.load('a.png')
+word_t = pygame.image.load('t.png') 
 
 pygame.display.set_caption('Asteroids')
 win = pygame.display.set_mode((sw, sh))
@@ -27,6 +29,7 @@ rapidFire = False
 rfStart = -1
 isSoundOn = False
 highScore = 0
+result = ''
 
 
 class Player(object):
@@ -90,12 +93,20 @@ class Player(object):
 class Asteroid(object):
     def __init__(self, rank):
         self.rank = rank
+        # if self.rank == 1:
+        #     self.image = asteroid50
+        # elif self.rank == 2:
+        #     self.image = asteroid100
+        # else:
+        #     self.image = asteroid150
+
         if self.rank == 1:
-            self.image = asteroid50
+            self.image = word_a
         elif self.rank == 2:
-            self.image = asteroid100
+            self.image = word_c
         else:
-            self.image = asteroid150
+            self.image = word_t
+
         self.w = 50 * rank
         self.h = 50 * rank
         self.ranPoint = random.choice([(random.randrange(0, sw-self.w), random.choice([-1*self.h - 5, sh + 5])), (random.choice([-1*self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
@@ -138,12 +149,27 @@ class Star(object):
 
 
 
+def updateresult():
+    font = pygame.font.SysFont('arial',30)
+    currentresult = font.render('Result: ' + result,1,(255,255,255))
+    win.blit(currentresult,(100,100))
+
+    if result == 'CAT':
+        congrats = font.render('Congrats!' + result,1,(255,255,255))
+        win.blit(congrats,(120,120))
+
+        
 
 def redrawGameWindow():
     win.blit(bg, (0,0))
     font = pygame.font.SysFont('arial',30)
     currentword = font.render('Word: CAT',1,(255,255,255))
     win.blit(currentword,(50,50))
+
+    # currentresult = font.render('Result: ' + result,1,(255,255,255))
+    # win.blit(currentresult,(100,100))
+
+    updateresult()
 
     livesText = font.render('Lives: ' + str(lives), 1, (255, 255, 255))
     playAgainText = font.render('Press Tab to Play Again', 1, (255,255,255))
@@ -177,7 +203,7 @@ while run:
     count += 1
     if not gameover:
         if count % 50 == 0:
-            ran = random.choice([1,1,1,2,2,3])
+            ran = random.choice([1,2,3])
             asteroids.append(Asteroid(ran))
         if count % 100 == 0:
             stars.append(Star())
@@ -197,6 +223,21 @@ while run:
                     #if letter a was hit
                     if a.rank == 1:
                         score += 10
+                        result = result + 'a'
+
+                    if a.rank == 2:
+                        score += 10
+                        result = result + 'c'
+
+                    if a.rank == 3:
+                        score += 10
+                        result = result + 't'
+
+                    # win.blit(result,(100,100))
+                    updateresult()
+            
+
+
 
 
         for s in stars:
