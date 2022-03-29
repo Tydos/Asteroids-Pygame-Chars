@@ -1,11 +1,16 @@
 import pygame
 import math
+import time as t
 import random
+
 
 pygame.init()
 
 sw = 800
 sh = 800
+
+
+
 
 bg = pygame.image.load('asteroidsPics/starbg.png')
 playerRocket = pygame.image.load('asteroidsPics/spaceRocket.png')
@@ -25,11 +30,11 @@ clock = pygame.time.Clock()
 gameover = False
 lives = 3
 score = 0
-rapidFire = False
-rfStart = -1
-isSoundOn = False
+
 highScore = 0
 result = ''
+word = 'CAT'
+start_time = t.time()
 
 
 class Player(object):
@@ -93,12 +98,7 @@ class Player(object):
 class Asteroid(object):
     def __init__(self, rank):
         self.rank = rank
-        # if self.rank == 1:
-        #     self.image = asteroid50
-        # elif self.rank == 2:
-        #     self.image = asteroid100
-        # else:
-        #     self.image = asteroid150
+     
 
         if self.rank == 1:
             self.image = word_a
@@ -154,22 +154,30 @@ def updateresult():
     currentresult = font.render('Result: ' + result,1,(255,255,255))
     win.blit(currentresult,(100,100))
 
-    if result == 'CAT':
-        congrats = font.render('Congrats!' + result,1,(255,255,255))
+    if result.lower() == word.lower():
+        congrats = font.render('Congrats!',1,(255,255,255))
         win.blit(congrats,(120,120))
 
-        
+def checktime():
+    curr_time = t.time() 
+    font = pygame.font.SysFont('arial',30)
+    currentresult = font.render('Time taken: ' + str(int(curr_time-start_time)),1,(255,255,255))
+    win.blit(currentresult,(200,50))
+    if curr_time - start_time >= 60:
+        pass
+              
 
 def redrawGameWindow():
     win.blit(bg, (0,0))
     font = pygame.font.SysFont('arial',30)
-    currentword = font.render('Word: CAT',1,(255,255,255))
+    currentword = font.render('Word: ' + word,1,(255,255,255))
     win.blit(currentword,(50,50))
 
     # currentresult = font.render('Result: ' + result,1,(255,255,255))
     # win.blit(currentresult,(100,100))
 
     updateresult()
+    checktime()
 
     livesText = font.render('Lives: ' + str(lives), 1, (255, 255, 255))
     playAgainText = font.render('Press Tab to Play Again', 1, (255,255,255))
@@ -179,10 +187,10 @@ def redrawGameWindow():
     player.draw(win)
     for a in asteroids:
         a.draw(win)
-   
+
     for s in stars:
         s.draw(win)
-  
+
     if gameover:
         win.blit(playAgainText, (sw//2-playAgainText.get_width()//2, sh//2 - playAgainText.get_height()//2))
     win.blit(scoreText, (sw- scoreText.get_width() - 25, 25))
@@ -190,14 +198,15 @@ def redrawGameWindow():
     win.blit(highScoreText, (sw - highScoreText.get_width() -25, 35 + scoreText.get_height()))
     pygame.display.update()
 
-
-
 player = Player()
 playerBullets = []
 asteroids = []
 count = 0
 stars = []
 run = True
+
+
+
 while run:
     clock.tick(60)
     count += 1
@@ -207,7 +216,7 @@ while run:
             asteroids.append(Asteroid(ran))
         if count % 100 == 0:
             stars.append(Star())
-   
+
 
         for a in asteroids:
             a.x += a.xv
