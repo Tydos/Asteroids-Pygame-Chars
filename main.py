@@ -6,22 +6,22 @@ import random
 
 pygame.init()
 
-sw = 800
-sh = 800
+sw = 1920
+sh = 1080
 
 
-
-
-bg = pygame.image.load('asteroidsPics/starbg.png')
-playerRocket = pygame.image.load('asteroidsPics/spaceRocket.png')
+# bg = pygame.image.load('asteroidsPics/starbg.png')
+bg = pygame.image.load('spacee.jpg')
+playerRocket = pygame.image.load('alienship.png')
+# playerRocket = pygame.image.load('asteroidsPics/spaceRocket.png')
 star = pygame.image.load('asteroidsPics/star.png')
-# asteroid50 = pygame.image.load('asteroidsPics/asteroid50.png')
-asteroid100 = pygame.image.load('asteroidsPics/asteroid100.png')
-asteroid150 = pygame.image.load('asteroidsPics/asteroid150.png')
-asteroid50 = pygame.image.load('D:/AsteroidsTut-master/a.png')
+# # asteroid50 = pygame.image.load('asteroidsPics/asteroid50.png')
+# asteroid100 = pygame.image.load('asteroidsPics/asteroid100.png')
+# asteroid150 = pygame.image.load('asteroidsPics/asteroid150.png')
+# asteroid50 = pygame.image.load('D:/AsteroidsTut-master/a.png')
 word_c = pygame.image.load('c.png')
 word_a = pygame.image.load('a.png')
-word_t = pygame.image.load('t.png') 
+word_b = pygame.image.load('b.png')
 
 pygame.display.set_caption('Asteroids')
 win = pygame.display.set_mode((sw, sh))
@@ -33,15 +33,52 @@ score = 0
 
 highScore = 0
 result = ''
-word = 'CAT'
+word = ''
 start_time = t.time()
+# EasyWords = ['TCC', 'CTC', 'CCT', 'TCT']
+# MediumWords = ['TCCT', 'TCTC', 'CTTC', 'CCCT']
+# HardWords = ['CTTCCCT', 'CTCCTC', 'CTCTCTC', 'TTCCTTTTTCT']
+EasyWords = ['ACBC', 'CBAC', 'CCBA', 'ACAB']
+MediumWords = ['ACBCBA', 'ACBAC', 'CABABC', 'CCBBCA']
+HardWords = ['CAACBCBBCA', 'BCACBCAC', 'CACBBBBACAC', 'ABBBACCAAAAACA']
+
+# Words = {
+#     'Hard': 'CTCTCT',
+#     'Medium': 'CTCCT',
+#     'Easy': 'CT'
+# }
+
+starsactive = False
+difficultylvl = 2
+# if difficultylvl == 3:
+
+#     # word = Words['Hard'];
+#     starsactive = True
+# elif difficultylvl == 2:
+#     # word = Words['Medium'];
+#     starsactive = True
+# else:
+#     # word = Words['Easy'];
+ran = random.randrange(0, 3)
+if difficultylvl == 3:
+    word = HardWords[ran]
+    starsactive = True
+
+elif difficultylvl == 2:
+    word = MediumWords[ran]
+    starsactive = True
+
+else:
+    word = EasyWords[ran]
 
 
 class Player(object):
     def __init__(self):
         self.img = playerRocket
-        self.w = self.img.get_width()
-        self.h = self.img.get_height()
+        # self.w = self.img.get_width()
+        # self.h = self.img.get_height()
+        self.w = 50
+        self.h = 50
         self.x = sw//2
         self.y = sh//2
         self.angle = 0
@@ -50,7 +87,8 @@ class Player(object):
         self.rotatedRect.center = (self.x, self.y)
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
-        self.head = (self.x + self.cosine * self.w//2, self.y - self.sine * self.h//2)
+        self.head = (self.x + self.cosine * self.w//2,
+                     self.y - self.sine * self.h//2)
 
     def draw(self, win):
         #win.blit(self.img, [self.x, self.y, self.w, self.h])
@@ -63,7 +101,8 @@ class Player(object):
         self.rotatedRect.center = (self.x, self.y)
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
-        self.head = (self.x + self.cosine * self.w//2, self.y - self.sine * self.h//2)
+        self.head = (self.x + self.cosine * self.w//2,
+                     self.y - self.sine * self.h//2)
 
     def turnRight(self):
         self.angle -= 5
@@ -72,7 +111,8 @@ class Player(object):
         self.rotatedRect.center = (self.x, self.y)
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
-        self.head = (self.x + self.cosine * self.w//2, self.y - self.sine * self.h//2)
+        self.head = (self.x + self.cosine * self.w//2,
+                     self.y - self.sine * self.h//2)
 
     def moveForward(self):
         self.x += self.cosine * 6
@@ -82,7 +122,8 @@ class Player(object):
         self.rotatedRect.center = (self.x, self.y)
         self.cosine = math.cos(math.radians(self.angle + 90))
         self.sine = math.sin(math.radians(self.angle + 90))
-        self.head = (self.x + self.cosine * self.w // 2, self.y - self.sine * self.h // 2)
+        self.head = (self.x + self.cosine * self.w // 2,
+                     self.y - self.sine * self.h // 2)
 
     def updateLocation(self):
         if self.x > sw + 50:
@@ -98,18 +139,20 @@ class Player(object):
 class Asteroid(object):
     def __init__(self, rank):
         self.rank = rank
-     
 
         if self.rank == 1:
             self.image = word_a
         elif self.rank == 2:
-            self.image = word_c
+            self.image = word_b
         else:
-            self.image = word_t
+            self.image = word_c
 
-        self.w = 50 * rank
-        self.h = 50 * rank
-        self.ranPoint = random.choice([(random.randrange(0, sw-self.w), random.choice([-1*self.h - 5, sh + 5])), (random.choice([-1*self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
+        # self.w = 50 * rank
+        # self.h = 50 * rank
+        self.w = 50
+        self.h = 50
+        self.ranPoint = random.choice([(random.randrange(0, sw-self.w), random.choice(
+            [-1*self.h - 5, sh + 5])), (random.choice([-1*self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
         self.x, self.y = self.ranPoint
         if self.x < sw//2:
             self.xdir = 1
@@ -119,17 +162,20 @@ class Asteroid(object):
             self.ydir = 1
         else:
             self.ydir = -1
-        self.xv = self.xdir * random.randrange(1,3)
-        self.yv = self.ydir * random.randrange(1,3)
+        self.xv = self.xdir * random.randrange(1, 3)
+        self.yv = self.ydir * random.randrange(1, 3)
 
     def draw(self, win):
         win.blit(self.image, (self.x, self.y))
 
+
 class Star(object):
     def __init__(self):
         self.img = star
-        self.w = self.img.get_width()
-        self.h = self.img.get_height()
+        # self.w = self.img.get_width()
+        # self.h = self.img.get_height()
+        self.w = 50
+        self.h = 50
         self.ranPoint = random.choice([(random.randrange(0, sw - self.w), random.choice([-1 * self.h - 5, sh + 5])),
                                        (random.choice([-1 * self.w - 5, sw + 5]), random.randrange(0, sh - self.h))])
         self.x, self.y = self.ranPoint
@@ -148,30 +194,45 @@ class Star(object):
         win.blit(self.img, (self.x, self.y))
 
 
-
 def updateresult():
-    font = pygame.font.SysFont('arial',30)
-    currentresult = font.render('Result: ' + result,1,(255,255,255))
-    win.blit(currentresult,(100,100))
+    global result
+    global score
+    global choice
+    global word
+    font = pygame.font.SysFont('arial', 30)
+    currentresult = font.render('RESULT: ' + result, 1, (255, 255, 255))
+
+    win.blit(currentresult, (920, 150))
 
     if result.lower() == word.lower():
-        congrats = font.render('Congrats!',1,(255,255,255))
-        win.blit(congrats,(120,120))
+        result = ''
+        score += 100
+        ran = random.randrange(0, 3)
+        if difficultylvl == 3:
+            word = HardWords[ran]
+
+        elif difficultylvl == 2:
+            word = MediumWords[ran]
+
+        else:
+            word = EasyWords[ran]
+
 
 def checktime():
-    curr_time = t.time() 
-    font = pygame.font.SysFont('arial',30)
-    currentresult = font.render('Time taken: ' + str(int(curr_time-start_time)),1,(255,255,255))
-    win.blit(currentresult,(200,50))
+    curr_time = t.time()
+    font = pygame.font.SysFont('arial', 30)
+    currenttime = font.render(
+        'TIME: ' + str(int(curr_time-start_time)) + ' Sec', 1, (255, 255, 255))
+    win.blit(currenttime, (1400, 200))
     if curr_time - start_time >= 60:
         pass
-              
+
 
 def redrawGameWindow():
-    win.blit(bg, (0,0))
-    font = pygame.font.SysFont('arial',30)
-    currentword = font.render('Word: ' + word,1,(255,255,255))
-    win.blit(currentword,(50,50))
+    win.blit(bg, (0, 0))
+    font = pygame.font.SysFont('arial', 30)
+    currentword = font.render('WORD: ' + word, 1, (255, 255, 255))
+    win.blit(currentword, (210, 150))
 
     # currentresult = font.render('Result: ' + result,1,(255,255,255))
     # win.blit(currentresult,(100,100))
@@ -179,10 +240,13 @@ def redrawGameWindow():
     updateresult()
     checktime()
 
-    livesText = font.render('Lives: ' + str(lives), 1, (255, 255, 255))
-    playAgainText = font.render('Press Tab to Play Again', 1, (255,255,255))
-    scoreText = font.render('Score: ' + str(score), 1, (255,255,255))
-    highScoreText = font.render('High Score: ' + str(highScore), 1, (255, 255, 255))
+    livesText = font.render('LIVES: ' + str(lives), 1, (255, 255, 255))
+    difficultylvlText = font.render(
+        'LEVEL: ' + str(difficultylvl), 1, (255, 255, 255))
+    playAgainText = font.render('Press Tab to Play Again', 1, (255, 255, 255))
+    scoreText = font.render('SCORE: ' + str(score), 1, (255, 255, 255))
+    highScoreText = font.render(
+        'HIGH SCORE: ' + str(highScore), 1, (255, 255, 255))
 
     player.draw(win)
     for a in asteroids:
@@ -192,11 +256,17 @@ def redrawGameWindow():
         s.draw(win)
 
     if gameover:
-        win.blit(playAgainText, (sw//2-playAgainText.get_width()//2, sh//2 - playAgainText.get_height()//2))
-    win.blit(scoreText, (sw- scoreText.get_width() - 25, 25))
-    win.blit(livesText, (25, 25))
-    win.blit(highScoreText, (sw - highScoreText.get_width() -25, 35 + scoreText.get_height()))
+        win.blit(playAgainText, (sw//2-playAgainText.get_width() //
+                 2, sh//2 - playAgainText.get_height()//2))
+
+    # win.blit(scoreText, (sw- scoreText.get_width() - 25, 25))
+    win.blit(scoreText, (1200, 150))
+    win.blit(livesText, (210, 200))
+    win.blit(difficultylvlText, (600, 150))
+    # win.blit(highScoreText, (sw - highScoreText.get_width() -25, 35 + scoreText.get_height()))
+    win.blit(highScoreText, (1400, 150))
     pygame.display.update()
+
 
 player = Player()
 playerBullets = []
@@ -204,7 +274,6 @@ asteroids = []
 count = 0
 stars = []
 run = True
-
 
 
 while run:
@@ -215,8 +284,8 @@ while run:
             ran = random.choice([1,2,3])
             asteroids.append(Asteroid(ran))
         if count % 100 == 0:
-            stars.append(Star())
-
+            if starsactive:
+                stars.append(Star())
 
         for a in asteroids:
             a.x += a.xv
@@ -224,51 +293,58 @@ while run:
 
             # if spaceship hits a asterioid ig
             if (a.x >= player.x - player.w//2 and a.x <= player.x + player.w//2) or (a.x + a.w <= player.x + player.w//2 and a.x + a.w >= player.x - player.w//2):
-                if(a.y >= player.y - player.h//2 and a.y <= player.y + player.h//2) or (a.y  +a.h >= player.y - player.h//2 and a.y + a.h <= player.y + player.h//2):
+                if(a.y >= player.y - player.h//2 and a.y <= player.y + player.h//2) or (a.y + a.h >= player.y - player.h//2 and a.y + a.h <= player.y + player.h//2):
                     # lives -= 1
                     score += 50
                     asteroids.pop(asteroids.index(a))
 
-                    #if letter a was hit
+                    # if letter a was hit
                     if a.rank == 1:
                         score += 10
-                        result = result + 'a'
+                        result = result + 'A'
 
                     if a.rank == 2:
                         score += 10
-                        result = result + 'c'
+                        result = result + 'B'
 
                     if a.rank == 3:
                         score += 10
-                        result = result + 't'
+                        result = result + 'C'
 
                     # win.blit(result,(100,100))
                     updateresult()
-            
-
-
-
 
         for s in stars:
             s.x += s.xv
             s.y += s.yv
 
-            #remove stars when they go offscreen
+            # remove stars when they go offscreen
             if s.x < -100 - s.w or s.x > sw + 100 or s.y > sh + 100 or s.y < -100 - s.h:
                 stars.pop(stars.index(s))
                 break
 
             # if spaceship hits a star
             if (s.x >= player.x - player.w//2 and s.x <= player.x + player.w//2) or (s.x + s.w <= player.x + player.w//2 and s.x + s.w >= player.x - player.w//2):
-                if(s.y >= player.y - player.h//2 and s.y <= player.y + player.h//2) or (s.y  +s.h >= player.y - player.h//2 and s.y + s.h <= player.y + player.h//2):
+                if(s.y >= player.y - player.h//2 and s.y <= player.y + player.h//2) or (s.y + s.h >= player.y - player.h//2 and s.y + s.h <= player.y + player.h//2):
                     lives -= 1
                     score -= 50
                     stars.pop(stars.index(s))
                     break
 
-
         if lives <= 0:
+
             gameover = True
+
+    # for event in pygame.event.get():
+
+    #     if event.key == pygame.K_LEFT or event.key == ord('a'):
+    #         player.turnLeft()
+    #     if event.key == pygame.K_RIGHT or event.key == ord('d'):
+    #         player.turnRight()
+    #     if event.key == pygame.K_UP or event.key == ord('w'):
+    #         player.moveForward()
+    #     if event.key == pygame.K_SPACE:
+    #         exit(0)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -277,6 +353,8 @@ while run:
             player.turnRight()
         if keys[pygame.K_UP]:
             player.moveForward()
+        if keys[pygame.K_SPACE]:
+            exit(0)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
