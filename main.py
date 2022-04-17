@@ -6,13 +6,14 @@ import random
 import numpy as np
 
 
-game_timer = 3
+game_timer = 60
 game_fps = 60
 sw = 1920
 sh = 1080
 exitflag = 0
 count = 0
-
+difficulty = []
+timetaken = []
 lives = 3
 score = 0
 hits = 0
@@ -29,8 +30,8 @@ start_time = t.time()
 
 
 EasyWords = ['ACBC', 'CBAC', 'CCBA', 'ACAB']
-MediumWords = ['ACBCBA', 'ACBAC', 'CABABC', 'CCBBCA']
-HardWords = ['CAACBCBBCA', 'BCACBCAC', 'CACBBBBACAC', 'ABBBACCAAAAACA']
+MediumWords = ['ACBA', 'ACBAC', 'CABBC', 'CBCA']
+HardWords = ['CAACBCBBCA', 'BCACBCAC', 'CACBBACAC', 'ABBBACAAAAACA']
 
 
 pygame.init()
@@ -47,31 +48,57 @@ font = pygame.font.SysFont('arial', 30)
 
 
 def AI():
-        
-    observation_space = 2
-    action_space = 1
-    Q = np.zeros((observation_space,action_space))
-    epsilon = 0.1
-    learningrate = 0.1
-    discountfactor = 0.9 
-    state = 0
-    nextstate = 0
-    reward = 10
-    penalty = -10
+    getcurrentstate()
+    checkprogress()   
+    # observation_space = 2
+    # action_space = 1
+    # Q = np.zeros((observation_space,action_space))
+    # epsilon = 0.1
+    # learningrate = 0.1
+    # discountfactor = 0.9 
+    # state = 0
+    # nextstate = 0
+    # reward = 10
+    # penalty = -10
 
-    if random.uniform(0,1) < epsilon:
-        action = random.choice([0,1])
+    # if random.uniform(0,1) < epsilon:
+    #     action = random.choice([0,1])
+    # else:
+    #     action = np.argmax(Q[state])
+    #     """Exploit: select the action with max value (future reward) """
+
+    # old_val = Q[state,action]
+    # next_max = np.max(Q[nextstate])
+
+    # new_val = (1-learningrate)*old_val + learningrate *(reward + discountfactor * next_max)
+    # Q[state,action] = new_val
+
+    # enviromentdata = [[1,24],[1,12],[2,16],[3,23],[2,23]]
+
+def getcurrentstate():
+    global difficulty,timetaken
+    curr_time = t.time()
+    difficulty.append(difficultylvl)
+    timetaken.append(int(curr_time-start_time))
+
+def checkprogress():
+    global difficultylvl
+    len = 0
+    for x in difficulty:
+        print(x)
+        len += 1
+    for y in timetaken:
+        print(y) 
+
+    lastdifficulty = difficulty[len-1]
+    lasttimetaken = timetaken[len-1]       
+
+    if lasttimetaken > timetaken[-1]:
+        if difficultylvl != 1:
+            difficultylvl -= 1
     else:
-        action = np.argmax(Q[state])
-        """Exploit: select the action with max value (future reward) """
-
-    old_val = Q[state,action]
-    next_max = np.max(Q[nextstate])
-
-    new_val = (1-learningrate)*old_val + learningrate *(reward + discountfactor * next_max)
-    Q[state,action] = new_val
-
-    enviromentdata = [[1,24],[1,12],[2,16],[3,23],[2,23]]
+        if difficultylvl != 3:
+            difficultylvl += 1
 
 
 class Player(object):
@@ -211,7 +238,7 @@ def updateresult():
         result = ''
         score += 100
         hits += 1
-        curr_time = t.time()
+        AI()
         initialize()
         
 

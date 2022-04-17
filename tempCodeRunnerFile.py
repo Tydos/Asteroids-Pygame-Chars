@@ -1,9 +1,11 @@
- # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_LEFT]:
-        #     player.turnLeft()
-        # if keys[pygame.K_RIGHT]:
-        #     player.turnRight()
-        # if keys[pygame.K_UP]:
-        #     player.moveForward()
-        # if keys[pygame.K_SPACE]:
-        #     exit(0)   
+ran = random.randrange(0, 3)
+# if difficultylvl == 3:
+#     word = HardWords[ran]
+#     starsactive = True
+
+# elif difficultylvl == 2:
+#     word = MediumWords[ran]
+#     starsactive = True
+
+# else:
+#     word = EasyWords[ran]
