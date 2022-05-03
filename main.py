@@ -3,7 +3,6 @@ import pygame
 import math
 import time as t
 import random
-import numpy as np
 
 
 game_timer = 60
@@ -37,7 +36,7 @@ HardWords = ['CAACBCBBCA', 'BCACBCAC', 'CACBBACAC', 'ABBBACAAAAACA']
 pygame.init()
 bg = pygame.image.load('spacee.jpg')
 playerRocket = pygame.image.load('alienship.png')
-star = pygame.image.load('asteroidsPics/star.png')
+star = pygame.image.load('star.png')
 word_c = pygame.image.load('c.png')
 word_a = pygame.image.load('a.png')
 word_b = pygame.image.load('b.png')
@@ -47,34 +46,10 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont('arial', 30)
 
 
-def AI():
+def dynamicdifficulty():
     getcurrentstate()
     checkprogress()   
-    # observation_space = 2
-    # action_space = 1
-    # Q = np.zeros((observation_space,action_space))
-    # epsilon = 0.1
-    # learningrate = 0.1
-    # discountfactor = 0.9 
-    # state = 0
-    # nextstate = 0
-    # reward = 10
-    # penalty = -10
-
-    # if random.uniform(0,1) < epsilon:
-    #     action = random.choice([0,1])
-    # else:
-    #     action = np.argmax(Q[state])
-    #     """Exploit: select the action with max value (future reward) """
-
-    # old_val = Q[state,action]
-    # next_max = np.max(Q[nextstate])
-
-    # new_val = (1-learningrate)*old_val + learningrate *(reward + discountfactor * next_max)
-    # Q[state,action] = new_val
-
-    # enviromentdata = [[1,24],[1,12],[2,16],[3,23],[2,23]]
-
+   
 def getcurrentstate():
     global difficulty,timetaken
     curr_time = t.time()
@@ -238,7 +213,7 @@ def updateresult():
         result = ''
         score += 100
         hits += 1
-        AI()
+        dynamicdifficulty()
         initialize()
         
 
